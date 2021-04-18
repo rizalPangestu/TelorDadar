@@ -46,6 +46,11 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+        'ujians' => [
+            'driver' => 'token',
+            'provider' => 'ujians',
+            'hash' => false,
+        ]
     ],
 
     /*
@@ -69,6 +74,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'ujians' => [
+            'driver' => 'eloquent',
+            'model' => App\Ujian::class,
         ],
 
         // 'users' => [
@@ -98,6 +107,11 @@ return [
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
+        ],
+        'ujians' => [
+            'provider' => 'ujians',
+            'table' => 'password_resets',
+            'expire' => 60,
         ],
     ],
 

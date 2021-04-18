@@ -26,5 +26,28 @@ use Illuminate\Support\Facades\Route;
 //         );
 // });
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\UjiansController;
+use App\Http\Controllers\MatkulController;
+use App\Http\Controllers\SoalController;
 
+
+//route api dosen
 Route::get('/dosen', [DosenController::class, 'getData']);
+Route::post('/dosen', [DosenController::class, 'postData']);
+
+
+//route matkul 
+Route::get('/matkul', [MatkulController::class, 'getMatkul']);
+Route::post('/matkul', [MatkulController::class, 'addMatkul']);
+//route api ujian
+Route::post('/ujian', [UjiansController::class, 'postData']);
+
+Route::get('/soalujian', [SoalController::class, 'getSoal']);
+Route::post('/soalujian', [SoalController::class, 'addSoal']);
+Route::post('/soalessay', [SoalController::class, 'getSoalbyId']);
+
+Route::group(['middleware' => 'ujian_auth'], function() {
+  Route::get('/ujian', [UjiansController::class, 'getData']);
+  Route::get('/ujian_detail', [UjiansController::class, 'getUJianDetail']);
+});
+Route::post('/loginujian', [UjiansController::class, 'loginUjian']);

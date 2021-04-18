@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddProdiInTblDosen extends Migration
+class CreateDosensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class AddProdiInTblDosen extends Migration
      */
     public function up()
     {
-        Schema::table('dosen', function (Blueprint $table) {
-            //
-            $table-> string('prodi')->after('name');
+        Schema::create('dosens', function (Blueprint $table) {
+            $table->bigIncrements('id_dosen');
+            $table->integer('nidn')->unique();
+            $table->string('nama_dosen',50);
+            $table->string('prodi',50);
+            $table->timestamps();
         });
     }
 
@@ -26,8 +29,6 @@ class AddProdiInTblDosen extends Migration
      */
     public function down()
     {
-        Schema::table('dosen', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('dosens');
     }
 }
