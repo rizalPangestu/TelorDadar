@@ -34,6 +34,7 @@ use App\Http\Controllers\SoalController;
 //route api dosen
 Route::get('/dosen', [DosenController::class, 'getData']);
 Route::post('/dosen', [DosenController::class, 'postData']);
+Route::post('/loginDosen', [DosenController::class, 'loginDosen']);
 
 
 //route matkul 

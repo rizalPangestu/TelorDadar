@@ -79,9 +79,10 @@ class UjiansController extends Controller
 
         return response()->json(
             [
+                'status' => 200,
                 'message' => "Get Sucess",
                 'data' => $ujian
-            ]
+            ],200
         );
     }
 

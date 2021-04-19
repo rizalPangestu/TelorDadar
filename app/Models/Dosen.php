@@ -9,6 +9,6 @@ class Dosen extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['nidn','nama','prodi'];
+    protected $fillable = ['nidn','nama','prodi','password'];
     
 }
