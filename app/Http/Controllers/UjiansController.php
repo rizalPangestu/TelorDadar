@@ -25,12 +25,16 @@ class UjiansController extends Controller
 
 
     public function postData(Request $request){
+        $token = explode(' ', $request->header('Authorization'));
+        $id_dosen = DB::table('dosens')->select('id_dosen')->where('api_token',$token[1])->first();
+
         $dataUjian = new Ujian;
-        $dataUjian -> id_dosen = $request -> input("id_dosen");
+        $dataUjian -> id_dosen =  $id_dosen->id_dosen;
         $dataUjian -> id_matkul = $request -> input("id_matkul");
         $dataUjian -> kode_ujian = $request -> input("kode_ujian");
         $dataUjian -> pass_ujian = $request -> input("pass_ujian");
         $dataUjian -> nama_ujian = $request -> input("nama_ujian");
+        $dataUjian -> jlm_soal = $request -> input("jlm_soal");
         $dataUjian -> waktu_ujian = $request -> input("waktu_ujian");
         $dataUjian -> mulai = $request -> input("mulai");
         $dataUjian -> selesai = $request -> input("selesai");
@@ -47,36 +51,25 @@ class UjiansController extends Controller
     }
 
     public function getUJianDetail(Request $request){
-        // $ujian = DB::table('ujian')
-        //         ->join('soalpills','ujian.id_ujian', '=','soalpills.id_soal' )
-        //         ->join('essays','ujian.id_ujian', '=','essays.id_soalEssay' )
-        //         ->select(
-        //             'ujian.nama_dosen',
-        //             'ujian.matkul',
-        //             'ujian.mulai',
-        //             'ujian.selesai',
-        //             'soalpills.soal',
-        //             'soalpills.pill_a',
-        //             'soalpills.pill_b',
-        //             'soalpills.pill_c',
-        //             'soalpills.pill_d',
-        //             'soalpills.pill_e',
-        //             'essays.soal_essay'
-        //             )->where('id_ujian',$id)
-        //         ->get();
 
-        // $header = 'cAdecicNohkzcavyjyPhyLFC2AYK5890u2liSPKxuhjn9zKmiqvJqNo0yqmS';
-        $header = $request->bearerToken();
+        $token = explode(' ', $request->header('Authorization'));
+
+        // $ujian = Ujian::where('api_token',$token[1])->first();
         $ujian = DB::table('ujians')
         ->select('id_ujian','nama_dosen','nama_matkul','nama_ujian','waktu_ujian','mulai','selesai')
         ->join('dosens','ujians.id_dosen', '=', 'dosens.id_dosen')
         ->join('matkuls','ujians.id_matkul', '=', 'matkuls.id_matkul')
-        ->where('api_token','=',$header)->first();
-        // $ujian = $id;
-        // $soalUjianEssay = DB::table('essays')->get();
-        // $soalUjianPG = DB::table('soalpills')->get();
+        ->where('ujians.api_token',$token[1])->first();
 
 
+        if(!$ujian){
+            return response()->json(
+                [
+                    'status' => 404,
+                    'message' => "data Tidak Ada",
+                ],404
+            );
+        }
         return response()->json(
             [
                 'status' => 200,
@@ -88,42 +81,87 @@ class UjiansController extends Controller
 
     public function loginUjian(Request $request){
 
+        $pass_ujian = $request->input('pass_ujian');
+        $kode_ujian = $request->input('kode_ujian');
+
         $dataLogin =  DB::table('ujians')
-        ->select('id_ujian','api_token')
-        // ->join('dosens','ujians.id_dosen', '=', 'dosens.id_dosen')
-        // ->join('matkuls','ujians.id_matkul', '=', 'matkuls.id_matkul')
-        ->where("kode_ujian", $request->kode_ujian)
-        ->where("pass_ujian", $request->pass_ujian)
+        ->select('id_ujian','api_token','kode_ujian','pass_ujian')
+        ->where("kode_ujian", $kode_ujian)
+        
         ->first();    
         
-        
-        if($dataLogin === null){
+        if($pass_ujian !== $dataLogin->pass_ujian){
             return response()->json(
                 [
+                    'status' =>  404,
                     'message' => 'login gagal',
-                    'data' => 'ujian tidak di temukan'
-                ]
+                    'data' => 'Password Salah'
+                ],404
             );
-        }else{
+        }
+        if($kode_ujian !== $dataLogin->kode_ujian){
+            return response()->json(
+                [
+                    'status' =>  404,
+                    'message' => 'login gagal',
+                    'data' => 'NIDN salah'
+                ],404
+            );
+        }
             return response()->json(
                 [
                 'message' => 'login success',
                 'data' => $dataLogin
             ]
         );
-        };
-        // if(Auth::attempt(['kode_soal' => $request-> kode_soal, "pass_soal" => $request->pass_soal])){
-        //     return response()->json([
-        //         'error' => 'your Credential is Wrong',
-        //         401
-        //     ]);
-        // }
-
-        // $ujian  = $ujian->find(Auth::ujian()->id);
-
-        // return fractal()
-        // -> item($ujian);
-
-
     }
+    
+    public function getUjianbyDosen(Request $request){
+        $token = explode(' ', $request->header('Authorization'));
+        $id_dosen = DB::table('dosens')->select('id_dosen')->where('api_token',$token[1])->first();
+        // $listUjian = Ujian::where('id_dosen', $id_dosen->id_dosen)->get();
+        $listUjian = DB::table('ujians')
+        ->select('id_ujian','nama_dosen','kode_ujian','pass_ujian','nama_matkul','nama_ujian','kelas','jlm_soal','waktu_ujian','mulai','selesai')
+        ->join('dosens','ujians.id_dosen', '=', 'dosens.id_dosen')
+        ->join('matkuls','ujians.id_matkul', '=', 'matkuls.id_matkul')
+        ->where('ujians.id_dosen',$id_dosen->id_dosen)->get();
+
+        return response() -> json([
+            'status' => 200,
+            'message' => 'get Success',
+            'data' => $listUjian
+        ]);
+    }
+
+    public function updateUjianByDosen(Request $request, $id) {
+        // $token = explode(' ', $request->header('Authorization'));
+        // $id_dosen = DB::table('dosens')->select('id_dosen')->where('api_token',$token[1])->first();
+        $updateUjian = Ujian::where('id_ujian', $id) -> first();
+
+        if($updateUjian){
+            $updateUjian -> id_dosen =  $request->id_dosen ? $request->$id_dosen : $updateUjian-> id_dosen ;
+            $updateUjian -> id_matkul = $request -> id_matkul ? $request -> id_matkul : $updateUjian -> id_matkul ;
+            $updateUjian -> kode_ujian = $request -> kode_ujian ? $request -> kode_ujian : $updateUjian->kode_ujian;
+            $updateUjian -> pass_ujian = $request -> pass_ujian ? $request-> pass_ujian : $updateUjian-> pass_ujian;
+            $updateUjian -> nama_ujian = $request -> nama_ujian ? $request-> nama_ujian : $updateUjian->nama_ujian;
+            $updateUjian -> jlm_soal = $request -> jlm_soal ? $request-> jlm_soal : $updateUjian-> jlm_soal;
+            $updateUjian -> waktu_ujian = $request -> waktu_ujian ? $request-> waktu_ujian : $updateUjian->waktu_ujian;
+            $updateUjian -> mulai = $request -> mulai ? $request-> mulai : $updateUjian -> mulai;
+            $updateUjian -> selesai = $request -> selesai ? $request-> selesai : $updateUjian -> selesai;
+            $updateUjian -> api_token = Str::random(60) ;
+            $updateUjian->save();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Update Berhasil',
+                'data' => $updateUjian,
+            ],200);
+        }else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Data tidak di temukan',
+                'data' => $updateUjian,
+            ],404);
+        }
+    }
+    
 }

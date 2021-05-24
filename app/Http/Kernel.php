@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'ujian_auth' => \App\Http\Middleware\UjiansAuth::class,
+        'dosen_auth' => \App\Http\Middleware\DosenAuth::class,
     ];
 }

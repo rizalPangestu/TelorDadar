@@ -9,6 +9,9 @@ class Ujian extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id_ujian'; // or null
+
+    public $incrementing = false;
     protected $fillable = [
         'id_dosen',
         'id_matkul',
@@ -20,5 +23,5 @@ class Ujian extends Model
         'selesai',
         'api_token'
     ];
-    protected $hidden = ['created_at','updated_at'];
+    protected $hidden = ['api_token','created_at','updated_at'];
 }

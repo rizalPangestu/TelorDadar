@@ -44,20 +44,32 @@ class DosenController extends Controller
 					],201
 				);
 		}
+	
+		public function getListSoal(Request $request){
+
+			$token = explode(' ', $request->header('Authorization'));
+			$id_dosen = DB::table('dosens')->select('id_dosen')->where('api_token',$token[1])->first();
+			$listSoal = DB::table('essays')->where('id_dosen', $id_dosen->id_dosen)->get();
+
+			return response() -> json(
+				[
+					'status' =>200,
+					'message' => 'Data Berhasil Di simpan',
+					'data' => $listSoal
+				],200
+			);
+		}
+
+
 
 		public function loginDosen(Request $request){
 
 			$nidn = $request->input('nidn');
 			$password = $request->input('password');
 			
-			$loginDosen = DB::table('dosens')->where('nidn',"=",$nidn)->first();
-
-		// 	return response()->json(
-		// 		[
-		// 				'message' => 'login berhasil',
-		// 				'data' => $loginDosen
-		// 		]
-		// );
+			// $loginDosen = DB::table('dosens')->where('nidn',"=",$nidn)->first();
+			$loginDosen = Dosen::where('nidn',"=",$nidn)->first();
+			
 			if(!$loginDosen){
 				return response()->json(
 					[
@@ -82,30 +94,18 @@ class DosenController extends Controller
 				'data' => $loginDosen
 				],200
 );
-				
-			
-			// $loginDosen = DB::table('dosens')
-			// 	->select('id_dosen','api_token')
-      //   ->where("nidn", $request->nidn)
-      //   ->first();   
 
-			// 	if($loginDosen === null){
-			// 		return response()->json(
-			// 				[
-			// 						'message' => 'login gagal',
-			// 						'data' => 'Dosen tidak di temukan'
-			// 				]
-			// 		);
-			// }else{
+		}
 
-			
-			// 		return response()->json(
-			// 				[
-			// 				'status' => 200,
-			// 				'message' => 'login success',
-			// 				'data' => $nidn
-			// 				],200
-			// );
-			// };
+
+		public function getDetailDosen(Request $request){
+			$token = explode(' ', $request->header('Authorization'));
+			$detailDosen = Dosen::where('api_token', $token[1])->first();
+
+			return response()->json([
+				'status' => 200,
+				'message'=>'success',
+				'data'=> $detailDosen
+			]);
 		}
 	}
