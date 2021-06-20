@@ -31,6 +31,7 @@ use App\Http\Controllers\MatkulController;
 use App\Http\Controllers\SoalController;
 use App\Http\Controllers\PgController;
 use App\Http\Controllers\HasilController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -55,16 +56,18 @@ Route::group(['middleware' => 'dosen_auth'], function() {
   //get matkul
   Route::get('/matkul_dosen', [MatkulController::class, 'getMatkulbyDosen']);
 
-  
-  
   //soal pg
   Route::post('/addsoalPG', [PgController::class, 'addSoalPG']);
   Route::get('/listSoalPG', [PgController::class, 'getSoalByDosen']);
+  Route::get('/detailSoal/{id}', [PgController::class, 'getDetailSoal']);
+  Route::delete('/deletesoal/{id}', [PgController::class, 'deleteSoal']);
+  Route::post('/updatesoal/{id}', [PgController::class, 'updateSoal']);
   
   //list ujian
   Route::post('/ujian', [UjiansController::class, 'postData']);
   Route::get('/listujian', [UjiansController::class, 'getUjianbyDosen']);
   Route::put('/updateujian/{id}', [UjiansController::class, 'updateUjianByDosen']);
+  Route::delete('/deleteujian/{id}', [UjiansController::class, 'deleteUjianByDosen']);
 
   //hasil ujian
   Route::get('/hasilujian', [HasilController::class, 'getHasilUjian']);
@@ -72,6 +75,7 @@ Route::group(['middleware' => 'dosen_auth'], function() {
   
 });
 Route::post('/loginDosen', [DosenController::class, 'loginDosen']);
+Route::post('/addAdmin', [DosenController::class, 'addAdmin']);
 
 
 //route matkul 
@@ -83,6 +87,7 @@ Route::group(['middleware' => 'ujian_auth'], function() {
   Route::get('/ujian_detail', [UjiansController::class, 'getUJianDetail']);
   Route::get('/soalessay', [SoalController::class, 'getSoalbyId']);
   Route::get('/soalPG', [PgController::class, 'getSoalPG']);
+  Route::get('/soalUjianPg', [PgController::class, 'getSoalUjian']);
   Route::post('/posthasilujian', [HasilController::class, 'postHasilUjian']);
 });
 Route::post('/loginujian', [UjiansController::class, 'loginUjian']);

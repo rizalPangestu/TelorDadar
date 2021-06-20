@@ -27,9 +27,9 @@ class DosenAuth
             return response()->json($response,401);
         }
         $api_token = explode(' ', $request->header('Authorization'));
-        $ujian = Dosen::where('api_token', $api_token[1])->first();
+        $dosen = Dosen::where('api_token', $api_token[1])->first();
 
-        if(!$ujian){
+        if(!$dosen){
             $response = [
                 'status' => 401,
                 'message' => 'Unauthorized'

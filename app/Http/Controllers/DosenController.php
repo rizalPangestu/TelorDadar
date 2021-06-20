@@ -44,6 +44,30 @@ class DosenController extends Controller
 					],201
 				);
 		}
+		public function addAdmin(Request $request) {
+			$this -> validate($request,[
+					// 'nidn' => 'required|unique:dosens',
+					'nama_dosen' => 'required',
+					'password' => 'required|min:6',
+					'prodi' => 'required',
+
+			]);
+			$dataAdmin  = new Dosen;
+			$dataAdmin -> nidn = rand(100000, 999999);
+			$dataAdmin -> nama_dosen = $request->input('nama_dosen');
+			$dataAdmin -> password= Hash::make($request->input('password'));
+			$dataAdmin -> prodi = $request->input('prodi');
+			$dataAdmin -> role = "admin";
+			$dataAdmin -> api_token = Hash::make(Str::random(60));
+			$dataAdmin -> save();
+					return response() -> json(
+							[
+									'status' =>201,
+									'message' => 'Data Berhasil Di simpan',
+									'data' => $dataAdmin
+							],201
+					);
+	}    
 	
 		public function getListSoal(Request $request){
 

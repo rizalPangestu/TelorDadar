@@ -31,7 +31,7 @@ class UjiansController extends Controller
         $dataUjian = new Ujian;
         $dataUjian -> id_dosen =  $id_dosen->id_dosen;
         $dataUjian -> id_matkul = $request -> input("id_matkul");
-        $dataUjian -> kode_ujian = $request -> input("kode_ujian");
+        $dataUjian -> kode_ujian = strtoupper(Str::random(6));
         $dataUjian -> pass_ujian = $request -> input("pass_ujian");
         $dataUjian -> nama_ujian = $request -> input("nama_ujian");
         $dataUjian -> jlm_soal = $request -> input("jlm_soal");
@@ -42,7 +42,8 @@ class UjiansController extends Controller
 
         $dataUjian ->save();
         return response() -> json(
-            [
+            [   
+                'status' => 200,
                 'message' => 'data di simpan',
                 'data' => $dataUjian
             ]
@@ -56,7 +57,7 @@ class UjiansController extends Controller
 
         // $ujian = Ujian::where('api_token',$token[1])->first();
         $ujian = DB::table('ujians')
-        ->select('id_ujian','nama_dosen','nama_matkul','nama_ujian','waktu_ujian','mulai','selesai')
+        ->select('id_ujian','nama_dosen','nama_matkul','nama_ujian','waktu_ujian','mulai','selesai','jlm_soal')
         ->join('dosens','ujians.id_dosen', '=', 'dosens.id_dosen')
         ->join('matkuls','ujians.id_matkul', '=', 'matkuls.id_matkul')
         ->where('ujians.api_token',$token[1])->first();
@@ -89,6 +90,7 @@ class UjiansController extends Controller
         ->where("kode_ujian", $kode_ujian)
         
         ->first();    
+        
         
         if($pass_ujian !== $dataLogin->pass_ujian){
             return response()->json(
@@ -163,5 +165,25 @@ class UjiansController extends Controller
             ],404);
         }
     }
+
+    public function deleteUjianByDosen(Request $request, $id){
+        $deleteUjian =  Ujian::where('id_ujian', $id)->first();
+        if($deleteUjian){
+            $deleteUjian->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Delete Berhasil',
+                'data' => $deleteUjian,
+            ],200);
+        }else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Data tidak di temukan',
+                'data' => $deleteUjian,
+            ],404);
+        }
+    }
+
+
     
 }

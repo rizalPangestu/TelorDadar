@@ -22,21 +22,59 @@ class MatkulController extends Controller
     }
 
     public function addMatkul(Request $request){
-        $addMatkul = new Matkul;
-        $addMatkul -> nama_matkul = $request->input('nama_matkul');
-        $addMatkul -> id_dosen = $request->input('id_dosen');
-        $addMatkul -> kelas = $request->input('kelas');
-        $addMatkul -> prodi = $request->input('prodi');
 
-        $addMatkul ->save();
+        $listMatkul = Matkul::where('id_dosen', '=', $request->input('id_dosen'))->where('nama_matkul','=' , $request->input('nama_matkul'))->first();
 
-        return response()->json(
-            [
-                'message' => 'Berhasil Di tambah',
-                'status' => 200,
-                'data' => $addMatkul
-            ]
-            );
+        // $addMatkul = new Matkul;
+        // $addMatkul -> nama_matkul = $request->input('nama_matkul');
+        // $addMatkul -> id_dosen = $request->input('id_dosen');
+        // $addMatkul -> kelas = $request->input('kelas');
+        // $addMatkul -> prodi = $request->input('prodi');
+        // $addMatkul ->save();
+
+
+        // if($listMatkul->id_dosen == $request->input('id_dosen') && $listMatkul->nama_matkul === $request->input('nama_matkul')){
+        if($listMatkul === null){ 
+            $addMatkul = new Matkul;
+            $addMatkul -> nama_matkul = $request->input('nama_matkul');
+            $addMatkul -> id_dosen = $request->input('id_dosen');
+            $addMatkul -> kelas = $request->input('kelas');
+            $addMatkul -> prodi = $request->input('prodi'); 
+            $addMatkul ->save();
+            return response()->json(
+                [
+                    'message' => 'Berhasil Di tambah',
+                    'status' => 200,
+                    'data' => $addMatkul
+                   
+                ]
+                );
+        }else{
+            return response()->json(
+                [
+                    'message' => 'Gagal Di tambah',
+                    'status' => 400,
+                ],400
+                );
+           
+        }
+        // }else{
+        //     $addMatkul ->save();
+        //     return response()->json(
+        //         [
+        //             'message' => 'Berhasil Di tambah',
+        //             'status' => 200,
+        //             'data' => $addMatkul
+        //         ]
+        //         );
+        //     }
+            return response()->json(
+                [
+                    'message' => 'Berhasil Di tambah',
+                    'status' => 200,
+                    'data' => $listMatkul->id_dosen
+                ]
+                );
     }
 
 
