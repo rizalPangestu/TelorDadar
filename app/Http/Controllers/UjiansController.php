@@ -88,26 +88,24 @@ class UjiansController extends Controller
         $dataLogin =  DB::table('ujians')
         ->select('id_ujian','api_token','kode_ujian','pass_ujian')
         ->where("kode_ujian", $kode_ujian)
-        
         ->first();    
         
-        
+        if(!$dataLogin){
+            return response()->json(
+                [
+                    'status' =>  400,
+                    'message' => 'Login Tidak Berhasil',
+                    'data' => 'Kode Ujian Salah'
+                ],400
+            );
+        }
         if($pass_ujian !== $dataLogin->pass_ujian){
             return response()->json(
                 [
-                    'status' =>  404,
-                    'message' => 'login gagal',
-                    'data' => 'Password Salah'
-                ],404
-            );
-        }
-        if($kode_ujian !== $dataLogin->kode_ujian){
-            return response()->json(
-                [
-                    'status' =>  404,
-                    'message' => 'login gagal',
-                    'data' => 'NIDN salah'
-                ],404
+                    'status' =>  400,
+                    'message' => 'Login Tidak Berhasil',
+                    'data' => 'Password Ujian Salah'
+                ],400
             );
         }
             return response()->json(

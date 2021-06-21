@@ -97,16 +97,16 @@ class DosenController extends Controller
 			if(!$loginDosen){
 				return response()->json(
 					[
-							'message' => 'login gagal',
-							'data' => 'Cek nidn'
+							'message' => 'Login Tidak Berhasil',
+							'data' => 'Cek NIDN Anda'
 					],400
 			);
 		}
 			if(!Hash::check($password, $loginDosen->password)){
 				return response()->json(
 					[
-					'message' => 'login gagal',
-					'data' => 'cek password'
+					'message' => 'Login Tidak Berhasil',
+					'data' => 'Cek Password Anda'
 					],400
 					)
 					;
@@ -114,7 +114,7 @@ class DosenController extends Controller
 			return response()->json(
 				[
 				'status' => 200,
-				'message' => 'login success',
+				'message' => 'Login Berhasil',
 				'data' => $loginDosen
 				],200
 );
