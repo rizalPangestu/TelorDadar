@@ -26,10 +26,6 @@ class PgController extends Controller
     }
     public function getSoalUjian(Request $request){
         $token = explode(' ', $request->header('Authorization'));
-        
-        // $dataSoal = DB::table('ujians')
-        // ->select('id_dosen','id_matkul','jlm_soal')
-        // ->where('ujians.api_token',$token[1])->first();
         $dataSoal = Ujian::where('api_token',$token[1])->first();
 
         $getSoalUjian = DB::table('t_pg')
@@ -37,6 +33,7 @@ class PgController extends Controller
         // ->join('matkuls', 'essays.id_matkul', '=', 'matkuls.id_matkul')
         ->where('id_dosen', $dataSoal->id_dosen)
         ->where('id_matkul', $dataSoal->id_matkul)
+        ->where('type_ujian', $dataSoal->nama_ujian)
         ->inRandomOrder()
         ->limit($dataSoal->jlm_soal)
         ->get();

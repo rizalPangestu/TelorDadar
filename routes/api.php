@@ -45,7 +45,13 @@ Route::group(['middleware' => 'dosen_auth'], function() {
 
   //add dosen (admin)
   Route::post('/dosen', [DosenController::class, 'postData']);
+  Route::put('/editDosen/{id}', [DosenController::class, 'editDosen']);
+  Route::delete('/deleteDosen/{id}', [DosenController::class, 'deleteDosen']);
+
+
   Route::post('/matkul', [MatkulController::class, 'addMatkul']);
+  Route::put('/editMatkul/{id}', [MatkulController::class, 'editMatkul']);
+  Route::delete('/deleteMatkul/{id}', [MatkulController::class, 'deleteMatkul']);
   Route::get('/matkul', [MatkulController::class, 'getMatkul']);
 
   //get soal

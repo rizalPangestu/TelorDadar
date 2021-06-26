@@ -22,17 +22,18 @@ class DosenController extends Controller
     public function postData(Request $request){
 			
 			$this -> validate($request,[
-				'nidn' => 'required|unique:dosens',
+				// 'nidn' => 'required|unique:dosens',
 				'nama_dosen' => 'required',
 				'password' => 'required|min:6',
 				'prodi' => 'required',
 
 			]);
 			$dataDosen  = new Dosen;
-			$dataDosen -> nidn = $request->input('nidn');
+			$dataDosen -> nidn = rand(100000, 999999);
 			$dataDosen -> nama_dosen = $request->input('nama_dosen');
 			$dataDosen -> password= Hash::make($request->input('password'));
 			$dataDosen -> prodi = $request->input('prodi');
+			$dataDosen -> role = "dosen";
 			$dataDosen -> api_token = Hash::make(Str::random(60));
 
 			$dataDosen -> save();
@@ -68,7 +69,66 @@ class DosenController extends Controller
 							],201
 					);
 	}    
-	
+		public function deleteDosen(Request $request, $id) {
+			$token = explode(' ', $request->header('Authorization'));
+			$deleteDosen = Dosen::select('id_dosen')->where('id_dosen',$id)->first();
+
+			if($deleteDosen){
+				$deleteDosen->delete();
+				return response() -> json(
+					[
+						'status' =>200,
+						'message' => 'Data Berhasil Dihapus',
+						'data' => $deleteDosen
+					],200
+				);
+				
+			}else{
+				return response() -> json(
+					[
+						'status' =>404,
+						'message' => 'Data tidak ditemukan',
+					],404
+				);
+			}
+		}
+		
+		public function editDosen(Request $request, $id){
+			$token = explode(' ', $request->header('Authorization'));
+			$editDosen = Dosen::where('id_dosen',$id)->first();
+
+			
+			if($editDosen){
+				$editDosen -> nidn = $editDosen->nidn;
+				$editDosen -> nama_dosen = $request->nama_dosen ? $request->nama_dosen : $editDosen->nama_dosen;
+				$editDosen -> password= $request->password ? Hash::make($request->input('password')) : $editDosen->password;
+				$editDosen -> prodi = $request->prodi ? $request->prodi : $editDosen -> prodi;
+				$editDosen -> role = "dosen";
+				$editDosen -> api_token = Hash::make(Str::random(60));
+				$editDosen->save();
+				return response() -> json(
+					[
+						'status' =>200,
+						'message' => 'Data Berhasil Dirubah',
+						'data' => $editDosen
+					],200
+				);
+			}else{
+				return response() -> json(
+					[
+						'status' =>404,
+						'message' => 'Data Tidak Ditemukan',
+					],404
+				);
+			}
+
+
+
+		}
+
+
+
+
 		public function getListSoal(Request $request){
 
 			$token = explode(' ', $request->header('Authorization'));

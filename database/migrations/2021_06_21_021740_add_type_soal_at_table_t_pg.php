@@ -17,6 +17,7 @@ class AddTypeSoalAtTableTPg extends Migration
         Schema::table('t_pg', function (Blueprint $table) {
             //
             $table->enum('type_ujian', ["UTS", "UAS","QUIZ"]);
+            $table->enum('type_soal', ["PG", "Essay"]);
         });
     }
 

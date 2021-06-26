@@ -46,7 +46,6 @@ class MatkulController extends Controller
                     'message' => 'Berhasil Di tambah',
                     'status' => 200,
                     'data' => $addMatkul
-                   
                 ]
                 );
         }else{
@@ -77,7 +76,57 @@ class MatkulController extends Controller
                 );
     }
 
+    public function editMatkul(Request $request, $id){
+        
+        $editMatkul = Matkul::where('id_matkul',$id)->first();
+        if($editMatkul){
+            $editMatkul -> nama_matkul = $request->nama_matkul ? $request->nama_matkul : $editMatkul->nama_matkul;
+            $editMatkul -> id_dosen = $request->nama_matkul ? $request->id_dosen : $editMatkul->id_dosen;
+            $editMatkul -> kelas = $request->nama_matkul ? $request->kelas : $editMatkul->kelas;
+            $editMatkul -> prodi = $request->nama_matkul ? $request->prodi : $editMatkul->prodi; 
+            $editMatkul ->save();
+            return response()->json(
+                [
+                    'message' => 'Berhasil Dirubah',
+                    'status' => 200,
+                    'data' => $editMatkul
+                ],200
+                );
+        }else{
+            return response()->json(
+                [
+                    'message' => 'Data Tidak ditemukan',
+                    'status' => 404,
+                    'data' => $editMatkul
+                ],404
+                ); 
+        }
+    }
 
+
+    public function deleteMatkul(Request $request, $id){
+        $token = explode(' ', $request->header('Authorization'));
+		$deleteMatkul = Matkul::where('id_matkul',$id)->first();
+
+			if($deleteMatkul){
+				$deleteMatkul->delete();
+				return response() -> json(
+					[
+						'status' =>200,
+						'message' => 'Data Berhasil Dihapus',
+						'data' => $deleteMatkul
+					],200
+				);
+				
+			}else{
+				return response() -> json(
+					[
+						'status' =>404,
+						'message' => 'Data tidak ditemukan',
+					],404
+				);
+			}
+    }
     public function getMatkulbyDosen(Request $request){
 
         $token = explode(' ', $request->header('Authorization'));

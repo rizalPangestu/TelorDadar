@@ -20,12 +20,13 @@ class CreateTPgTables extends Migration
             $table->unsignedBigInteger('id_matkul');
             $table->foreign('id_matkul')->references('id_matkul')->on('matkuls');
             $table->text('soal_pg');
-            $table->text('pil_a');
-            $table->text('pil_b');
-            $table->text('pil_c');
-            $table->text('pil_d');
-            $table->text('pil_e');
-            $table->text('kunci_pg');
+            $table->text('pil_a')->nullable();
+            $table->text('pil_b')->nullable();
+            $table->text('pil_c')->nullable();
+            $table->text('pil_d')->nullable();
+            $table->text('pil_e')->nullable();
+            $table->text('kunci_pg')->nullable();
+            $table->text('kunci_essay')->nullable();
             $table->timestamps();
         });
     }
