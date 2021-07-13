@@ -10,7 +10,11 @@ class MatkulController extends Controller
 {
     //
     public function getMatkul(){
-        $matkul = DB::table('matkuls')->get();
+        $matkul = DB::table('matkuls')
+        ->select('id_matkul','nama_dosen','nidn', 'nama_matkul','matkuls.prodi','kelas','matkuls.updated_at')
+        ->join('dosens','matkuls.id_dosen', '=', 'dosens.id_dosen')
+        ->get()
+        ;
 
         return response()->json(
             [
@@ -81,9 +85,9 @@ class MatkulController extends Controller
         $editMatkul = Matkul::where('id_matkul',$id)->first();
         if($editMatkul){
             $editMatkul -> nama_matkul = $request->nama_matkul ? $request->nama_matkul : $editMatkul->nama_matkul;
-            $editMatkul -> id_dosen = $request->nama_matkul ? $request->id_dosen : $editMatkul->id_dosen;
-            $editMatkul -> kelas = $request->nama_matkul ? $request->kelas : $editMatkul->kelas;
-            $editMatkul -> prodi = $request->nama_matkul ? $request->prodi : $editMatkul->prodi; 
+            $editMatkul -> id_dosen = $request->id_dosen ? $request->id_dosen : $editMatkul->id_dosen;
+            $editMatkul -> kelas = $request->kelas ? $request->kelas : $editMatkul->kelas;
+            $editMatkul -> prodi = $request->prodi ? $request->prodi : $editMatkul->prodi; 
             $editMatkul ->save();
             return response()->json(
                 [

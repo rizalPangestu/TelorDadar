@@ -9,8 +9,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 class DosenController extends Controller
 {
+    // public function getData(){
+    //     $dosen = DB::table('dosens')
+		// 		->where('role', '=', 'dosen')
+		// 		->get();
+    //     return response()->json(
+    //         [
+    //             "message" => 'get Data sucess',
+    //             "data" => $dosen
+    //         ]
+    //         );
+    // }
     public function getData(){
-        $dosen = DB::table('dosens')->get();
+        $dosen = Dosen::where('role', '=', 'dosen')->get();
         return response()->json(
             [
                 "message" => 'get Data sucess',
@@ -45,6 +56,7 @@ class DosenController extends Controller
 					],201
 				);
 		}
+		
 		public function addAdmin(Request $request) {
 			$this -> validate($request,[
 					// 'nidn' => 'required|unique:dosens',
@@ -71,7 +83,7 @@ class DosenController extends Controller
 	}    
 		public function deleteDosen(Request $request, $id) {
 			$token = explode(' ', $request->header('Authorization'));
-			$deleteDosen = Dosen::select('id_dosen')->where('id_dosen',$id)->first();
+			$deleteDosen = Dosen::where('id_dosen',$id)->first();
 
 			if($deleteDosen){
 				$deleteDosen->delete();
