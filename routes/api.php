@@ -53,6 +53,7 @@ Route::group(['middleware' => 'dosen_auth'], function() {
   Route::put('/editMatkul/{id}', [MatkulController::class, 'editMatkul']);
   Route::delete('/deleteMatkul/{id}', [MatkulController::class, 'deleteMatkul']);
   Route::get('/matkul', [MatkulController::class, 'getMatkul']);
+  Route::get('/matkulCount', [MatkulController::class, 'count']);
 
   //get soal
   Route::get('/soal_dosen', [DosenController::class, 'getListSoal']);
@@ -74,10 +75,13 @@ Route::group(['middleware' => 'dosen_auth'], function() {
   Route::get('/listujian', [UjiansController::class, 'getUjianbyDosen']);
   Route::put('/updateujian/{id}', [UjiansController::class, 'updateUjianByDosen']);
   Route::delete('/deleteujian/{id}', [UjiansController::class, 'deleteUjianByDosen']);
+  Route::get('/countSoalUjian', [UjiansController::class, 'getJumlahUjian']);
 
   //hasil ujian
   Route::get('/hasilujian', [HasilController::class, 'getHasilUjian']);
   Route::get('/hasilujiandosen/{id}', [HasilController::class, 'getHasilUjianbyDosen']);
+  Route::put('/edithasilujian/{id}', [HasilController::class, 'editHasilUjian']);
+  Route::delete('/deletehasilujian/{id}', [HasilController::class, 'deleteHasilUjian']);
   
 });
 Route::post('/loginDosen', [DosenController::class, 'loginDosen']);
@@ -94,6 +98,7 @@ Route::group(['middleware' => 'ujian_auth'], function() {
   Route::get('/soalessay', [SoalController::class, 'getSoalbyId']);
   Route::get('/soalPG', [PgController::class, 'getSoalPG']);
   Route::get('/soalUjianPg', [PgController::class, 'getSoalUjian']);
+  
   Route::post('/posthasilujian', [HasilController::class, 'postHasilUjian']);
 });
 Route::post('/loginujian', [UjiansController::class, 'loginUjian']);

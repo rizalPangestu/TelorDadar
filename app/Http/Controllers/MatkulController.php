@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Dosen;
 use App\Models\Matkul;
 class MatkulController extends Controller
 {
@@ -12,10 +12,10 @@ class MatkulController extends Controller
     public function getMatkul(){
         $matkul = DB::table('matkuls')
         ->select('id_matkul','nama_dosen','nidn', 'nama_matkul','matkuls.prodi','kelas','matkuls.updated_at')
+        ->where('matkuls.deleted_at','=',NULL)
         ->join('dosens','matkuls.id_dosen', '=', 'dosens.id_dosen')
-        ->get()
-        ;
-
+        ->get();
+        
         return response()->json(
             [
                 'message' => 'Get data succes',
@@ -24,6 +24,20 @@ class MatkulController extends Controller
             ]
             );
     }
+    public function count() {
+        $matkulCount = Matkul::count();
+        $dosenCount = Dosen::count();
+
+        return response()->json(
+            [
+                'message' => 'Get data succes',
+                'status' => 200,
+                'matkul' => $matkulCount,
+                'dosen' => $dosenCount
+            ]
+            );
+    }
+
 
     public function addMatkul(Request $request){
 

@@ -12,7 +12,7 @@ class Ujian extends Model
     protected $primaryKey = 'id_ujian'; // or null
 
     public $incrementing = false;
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $fillable = [
         'id_dosen',
         'id_matkul',

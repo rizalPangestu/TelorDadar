@@ -21,7 +21,8 @@ class DosenController extends Controller
     //         );
     // }
     public function getData(){
-        $dosen = Dosen::where('role', '=', 'dosen')->get();
+        // $dosen = Dosen::where('role', '=', 'dosen')->get();
+        $dosen = Dosen::get();
         return response()->json(
             [
                 "message" => 'get Data sucess',
@@ -36,6 +37,7 @@ class DosenController extends Controller
 				// 'nidn' => 'required|unique:dosens',
 				'nama_dosen' => 'required',
 				'password' => 'required|min:6',
+				'role' => 'required',
 				'prodi' => 'required',
 
 			]);
@@ -44,7 +46,7 @@ class DosenController extends Controller
 			$dataDosen -> nama_dosen = $request->input('nama_dosen');
 			$dataDosen -> password= Hash::make($request->input('password'));
 			$dataDosen -> prodi = $request->input('prodi');
-			$dataDosen -> role = "dosen";
+			$dataDosen -> role = $request->input('role');
 			$dataDosen -> api_token = Hash::make(Str::random(60));
 
 			$dataDosen -> save();
@@ -56,7 +58,7 @@ class DosenController extends Controller
 					],201
 				);
 		}
-		
+
 		public function addAdmin(Request $request) {
 			$this -> validate($request,[
 					// 'nidn' => 'required|unique:dosens',
@@ -115,8 +117,9 @@ class DosenController extends Controller
 				$editDosen -> nama_dosen = $request->nama_dosen ? $request->nama_dosen : $editDosen->nama_dosen;
 				$editDosen -> password= $request->password ? Hash::make($request->input('password')) : $editDosen->password;
 				$editDosen -> prodi = $request->prodi ? $request->prodi : $editDosen -> prodi;
-				$editDosen -> role = "dosen";
-				$editDosen -> api_token = Hash::make(Str::random(60));
+				$editDosen -> role = $request->role ? $request->role : $editDosen->role;
+				// $editDosen -> api_token = $request->api_token ? $request->api_token : Hash::make(Str::random(60));
+				$editDosen -> api_token = $editDosen->api_token;
 				$editDosen->save();
 				return response() -> json(
 					[

@@ -28,20 +28,46 @@ class PgController extends Controller
         $token = explode(' ', $request->header('Authorization'));
         $dataSoal = Ujian::where('api_token',$token[1])->first();
 
-        $getSoalUjian = DB::table('t_pg')
-        // ->join('dosens', 'essays.id_dosen', '=', 'dosens.id_dosen')
-        // ->join('matkuls', 'essays.id_matkul', '=', 'matkuls.id_matkul')
-        ->where('id_dosen', $dataSoal->id_dosen)
-        ->where('id_matkul', $dataSoal->id_matkul)
-        ->where('type_ujian', $dataSoal->nama_ujian)
-        ->inRandomOrder()
-        ->limit($dataSoal->jlm_soal)
-        ->get();
+        if($dataSoal->type_soal === "PG Dan Essay"){
+            $getSoalUjian = DB::table('t_pg')
+            ->where('id_dosen', $dataSoal->id_dosen)
+            ->where('id_matkul', $dataSoal->id_matkul)
+            ->where('type_ujian', $dataSoal->nama_ujian)
+            ->inRandomOrder()
+            ->limit($dataSoal->jumlah_soal_PG)
+            ->limit($dataSoal->jumlah_soal_Essay)
+            ->get();
+        }
+        
+        if($dataSoal->type_soal === "PG"){
+            $getSoalUjian = DB::table('t_pg')
+            // ->join('dosens', 'essays.id_dosen', '=', 'dosens.id_dosen')
+            // ->join('matkuls', 'essays.id_matkul', '=', 'matkuls.id_matkul')
+            ->where('id_dosen', $dataSoal->id_dosen)
+            ->where('id_matkul', $dataSoal->id_matkul)
+            ->where('type_ujian', $dataSoal->nama_ujian)
+            ->where('type_soal', $dataSoal->type_soal)
+            ->inRandomOrder()
+            ->limit($dataSoal->jumlah_soal_PG)
+            ->get();
+        }
+        if($dataSoal->type_soal === "Essay"){
+            $getSoalUjian = DB::table('t_pg')
+            // ->join('dosens', 'essays.id_dosen', '=', 'dosens.id_dosen')
+            // ->join('matkuls', 'essays.id_matkul', '=', 'matkuls.id_matkul')
+            ->where('id_dosen', $dataSoal->id_dosen)
+            ->where('id_matkul', $dataSoal->id_matkul)
+            ->where('type_ujian', $dataSoal->nama_ujian)
+            ->where('type_soal', $dataSoal->type_soal)
+            ->inRandomOrder()
+            ->limit($dataSoal->jumlah_soal_Essay)
+            ->get();
+        }
 
         return response()->json([
             'status'=>200,
             'message'=>"succes",
-            'data'=>$getSoalUjian
+            'data'=>$getSoalUjian,
         ]);
     }
 
@@ -137,7 +163,10 @@ class PgController extends Controller
         $addSoalPG -> pil_c = $request -> input('pil_c');
         $addSoalPG -> pil_d = $request -> input('pil_d');
         $addSoalPG -> pil_e = $request -> input('pil_e');
+        $addSoalPG -> type_ujian = $request -> input('type_ujian');
+        $addSoalPG -> type_soal = $request -> input('type_soal');
         $addSoalPG -> kunci_pg = $request -> input('kunci_pg');
+        $addSoalPG -> kunci_essay = $request -> input('kunci_essay');
         
         //input gambar
         $addSoalPG -> soal_gambar = $filename;
@@ -269,7 +298,8 @@ class PgController extends Controller
 
         
         if($updateSoal){
-            $updateSoal-> id_matkul = $request->id_matkul ;
+            $updateSoal-> id_matkul = $request->id_matkul ? $request -> id_matkul : $updateSoal -> id_matkul ;
+            $updateSoal -> type_ujian = $request -> type_ujian ? $request -> type_ujian : $updateSoal -> type_ujian;
             $updateSoal -> soal_pg = $request -> soal_pg ? $request -> soal_pg : $updateSoal -> soal_pg;
             $updateSoal -> pil_a = $request -> pil_a ? $request -> pil_a : $updateSoal -> pil_a;
             $updateSoal -> pil_b = $request -> pil_b ? $request -> pil_b : $updateSoal -> pil_b;
@@ -277,6 +307,8 @@ class PgController extends Controller
             $updateSoal -> pil_d = $request -> pil_d ? $request -> pil_d : $updateSoal -> pil_d;
             $updateSoal -> pil_e = $request -> pil_e ? $request -> pil_e : $updateSoal -> pil_e;
             $updateSoal -> kunci_pg = $request ->kunci_pg ? $request -> kunci_pg : $updateSoal -> kunci_pg;
+            $updateSoal -> kunci_essay = $request -> kunci_essay ? $request -> kunci_essay : $updateSoal -> kunci_essay;
+
 
             if($request->file('soal_gambar') !=  null){
                 if($updateSoal -> soal_gambar){
