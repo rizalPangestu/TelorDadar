@@ -169,15 +169,25 @@ class UjiansController extends Controller
         $updateUjian = Ujian::where('id_ujian', $id) -> first();
 
         if($updateUjian){
-            if($request->type_soal === 'PG'){
-                $updateUjian -> id_dosen =  $request->id_dosen ? $request->$id_dosen : $updateUjian-> id_dosen ;
+
+            $updateUjian -> id_dosen =  $request->id_dosen ? $request->$id_dosen : $updateUjian-> id_dosen ;
                 $updateUjian -> id_matkul = $request -> id_matkul ? $request -> id_matkul : $updateUjian -> id_matkul ;
                 $updateUjian -> kode_ujian = $request -> kode_ujian ? $request -> kode_ujian : $updateUjian->kode_ujian;
                 $updateUjian -> pass_ujian = $request -> pass_ujian ? $request-> pass_ujian : $updateUjian-> pass_ujian;
                 $updateUjian -> nama_ujian = $request -> nama_ujian ? $request-> nama_ujian : $updateUjian->nama_ujian;
-                $updateUjian -> jumlah_soal_PG = $request -> jumlah_soal_PG ? $request-> jumlah_soal_PG : $updateUjian-> jumlah_soal_PG;
+                if($request->type_soal === "PG"){
+                    $updateUjian -> jumlah_soal_PG = $request -> jumlah_soal_PG ? $request-> jumlah_soal_PG : $updateUjian-> jumlah_soal_PG;
+                    $updateUjian -> jumlah_soal_essay = null;
+                }
+                if($request->type_soal === "Essay"){
+                    $updateUjian -> jumlah_soal_PG = null;
+                    $updateUjian -> jumlah_soal_essay = $request -> jumlah_soal_essay ? $request-> jumlah_soal_essay : $updateUjian-> jumlah_soal_essay;
+                }
+                if($request->type_soal === "PG Dan Essay"){
+                    $updateUjian -> jumlah_soal_PG = $request -> jumlah_soal_PG ? $request-> jumlah_soal_PG : $updateUjian-> jumlah_soal_PG;
+                    $updateUjian -> jumlah_soal_essay = $request -> jumlah_soal_essay ? $request-> jumlah_soal_essay : $updateUjian-> jumlah_soal_essay;
+                }
                 // $updateUjian -> jumlah_soal_essay = $request -> jumlah_soal_essay ? $request-> jumlah_soal_essay : $updateUjian-> jumlah_soal_essay;
-                $updateUjian -> jumlah_soal_essay = null;
                 $updateUjian -> waktu_ujian = $request -> waktu_ujian ? $request-> waktu_ujian : $updateUjian->waktu_ujian;
                 $updateUjian -> type_soal = $request -> type_soal ? $request-> type_soal : $updateUjian->type_soal;
                 $updateUjian -> mulai = $request -> mulai ? $request-> mulai : $updateUjian -> mulai;
@@ -189,52 +199,6 @@ class UjiansController extends Controller
                     'message' => 'Update Berhasil',
                     'data' => $updateUjian,
                 ],200);
-            }
-            if($request->type_soal === 'Essay'){
-                $updateUjian -> id_dosen =  $request->id_dosen ? $request->$id_dosen : $updateUjian-> id_dosen ;
-                $updateUjian -> id_matkul = $request -> id_matkul ? $request -> id_matkul : $updateUjian -> id_matkul ;
-                $updateUjian -> kode_ujian = $request -> kode_ujian ? $request -> kode_ujian : $updateUjian->kode_ujian;
-                $updateUjian -> pass_ujian = $request -> pass_ujian ? $request-> pass_ujian : $updateUjian-> pass_ujian;
-                $updateUjian -> nama_ujian = $request -> nama_ujian ? $request-> nama_ujian : $updateUjian->nama_ujian;
-                // $updateUjian -> jumlah_soal_PG = $request -> jumlah_soal_PG ? $request-> jumlah_soal_PG : $updateUjian-> jumlah_soal_PG;
-                $updateUjian -> jumlah_soal_PG = null;
-                $updateUjian -> jumlah_soal_essay = $request -> jumlah_soal_essay ? $request-> jumlah_soal_essay : $updateUjian-> jumlah_soal_essay;
-                // $updateUjian -> jumlah_soal_essay = null;
-                $updateUjian -> waktu_ujian = $request -> waktu_ujian ? $request-> waktu_ujian : $updateUjian->waktu_ujian;
-                $updateUjian -> type_soal = $request -> type_soal ? $request-> type_soal : $updateUjian->type_soal;
-                $updateUjian -> mulai = $request -> mulai ? $request-> mulai : $updateUjian -> mulai;
-                $updateUjian -> selesai = $request -> selesai ? $request-> selesai : $updateUjian -> selesai;
-                $updateUjian -> api_token =$updateUjian->api_token;
-                $updateUjian->save();
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Update Berhasil',
-                    'data' => $updateUjian,
-                ],200);
-            }
-            if($request->type_soal === 'PG Dan Essay'){
-                $updateUjian -> id_dosen =  $request->id_dosen ? $request->$id_dosen : $updateUjian-> id_dosen ;
-                $updateUjian -> id_matkul = $request -> id_matkul ? $request -> id_matkul : $updateUjian -> id_matkul ;
-                $updateUjian -> kode_ujian = $request -> kode_ujian ? $request -> kode_ujian : $updateUjian->kode_ujian;
-                $updateUjian -> pass_ujian = $request -> pass_ujian ? $request-> pass_ujian : $updateUjian-> pass_ujian;
-                $updateUjian -> nama_ujian = $request -> nama_ujian ? $request-> nama_ujian : $updateUjian->nama_ujian;
-                $updateUjian -> jumlah_soal_PG = $request -> jumlah_soal_PG ? $request-> jumlah_soal_PG : $updateUjian-> jumlah_soal_PG;
-                // $updateUjian -> jumlah_soal_PG = null;
-                $updateUjian -> jumlah_soal_essay = $request -> jumlah_soal_essay ? $request-> jumlah_soal_essay : $updateUjian-> jumlah_soal_essay;
-                // $updateUjian -> jumlah_soal_essay = null;
-                $updateUjian -> waktu_ujian = $request -> waktu_ujian ? $request-> waktu_ujian : $updateUjian->waktu_ujian;
-                $updateUjian -> type_soal = $request -> type_soal ? $request-> type_soal : $updateUjian->type_soal;
-                $updateUjian -> mulai = $request -> mulai ? $request-> mulai : $updateUjian -> mulai;
-                $updateUjian -> selesai = $request -> selesai ? $request-> selesai : $updateUjian -> selesai;
-                $updateUjian -> api_token =$updateUjian->api_token;
-                $updateUjian->save();
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Update Berhasil',
-                    'data' => $updateUjian,
-                ],200);
-            }
-            
         }else{
             return response()->json([
                 'status' => 404,

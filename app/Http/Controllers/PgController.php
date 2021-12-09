@@ -29,13 +29,22 @@ class PgController extends Controller
         $dataSoal = Ujian::where('api_token',$token[1])->first();
 
         if($dataSoal->type_soal === "PG Dan Essay"){
-            $getSoalUjian = DB::table('t_pg')
+            $getSoalUjianPG = DB::table('t_pg')
             ->where('id_dosen', $dataSoal->id_dosen)
             ->where('id_matkul', $dataSoal->id_matkul)
             ->where('type_ujian', $dataSoal->nama_ujian)
+            ->where('type_soal', 'PG')
             ->inRandomOrder()
             ->limit($dataSoal->jumlah_soal_PG)
-            ->limit($dataSoal->jumlah_soal_Essay)
+            ->get();
+
+            $getSoalUjianEssay = DB::table('t_pg')
+            ->where('id_dosen', $dataSoal->id_dosen)
+            ->where('id_matkul', $dataSoal->id_matkul)
+            ->where('type_ujian', $dataSoal->nama_ujian)
+            ->where('type_soal', "Essay")
+            ->inRandomOrder()
+            ->limit($dataSoal->jumlah_soal_essay)
             ->get();
         }
         
@@ -60,15 +69,28 @@ class PgController extends Controller
             ->where('type_ujian', $dataSoal->nama_ujian)
             ->where('type_soal', $dataSoal->type_soal)
             ->inRandomOrder()
-            ->limit($dataSoal->jumlah_soal_Essay)
+            ->limit($dataSoal->jumlah_soal_essay)
             ->get();
         }
 
-        return response()->json([
-            'status'=>200,
-            'message'=>"succes",
-            'data'=>$getSoalUjian,
-        ]);
+        if($dataSoal->type_soal === "PG Dan Essay"){
+            return response()->json([
+                'status'=>200,
+                'message'=>"succes",
+                'type' => 1,
+                'data'=>$getSoalUjianPG,
+                'data2'=>$getSoalUjianEssay,
+
+            ]);
+        }else{
+            return response()->json([
+                'status'=>200,
+                'message'=>"succes",
+                'type' => 0,
+                'data'=>$getSoalUjian,
+            ]);
+        }
+
     }
 
     public function addSoalPG(Request $request){
