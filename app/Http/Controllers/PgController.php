@@ -46,8 +46,16 @@ class PgController extends Controller
             ->inRandomOrder()
             ->limit($dataSoal->jumlah_soal_essay)
             ->get();
+
+            // return response()->json([
+            //     'status'=>200,
+            //     'message'=>"succes",
+            //     'type' => 1,
+            //     'data'=>$getSoalUjianPG,
+            //     'data2'=>$getSoalUjianEssay,
+
+            // ]);
         }
-        
         if($dataSoal->type_soal === "PG"){
             $getSoalUjian = DB::table('t_pg')
             // ->join('dosens', 'essays.id_dosen', '=', 'dosens.id_dosen')
@@ -59,7 +67,14 @@ class PgController extends Controller
             ->inRandomOrder()
             ->limit($dataSoal->jumlah_soal_PG)
             ->get();
-        }
+
+            // return response()->json([
+            //     'status'=>200,
+            //     'message'=>"succes",
+            //     'type' => 0,
+            //     'data'=>$getSoalUjian,
+            // ]);
+        } 
         if($dataSoal->type_soal === "Essay"){
             $getSoalUjian = DB::table('t_pg')
             // ->join('dosens', 'essays.id_dosen', '=', 'dosens.id_dosen')
@@ -71,6 +86,13 @@ class PgController extends Controller
             ->inRandomOrder()
             ->limit($dataSoal->jumlah_soal_essay)
             ->get();
+
+            // return response()->json([
+            //     'status'=>200,
+            //     'message'=>"succes",
+            //     'type' => 0,
+            //     'data'=>$getSoalUjian,
+            // ]);
         }
 
         if($dataSoal->type_soal === "PG Dan Essay"){
