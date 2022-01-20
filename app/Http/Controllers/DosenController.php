@@ -161,8 +161,90 @@ class DosenController extends Controller
 
 
 
-		public function loginDosen(Request $request){
+		// public function loginDosen(Request $request){
+		// 	$dosen = Dosen::get();
+		// 	if($dosen->isEmpty()){
+		// 			$this -> validate($request,[
+		// 				// 'nidn' => 'required|unique:dosens',
+		// 				'nama_dosen' => 'required',
+		// 				'password' => 'required|min:6',
+		// 				'prodi' => 'required',
 
+		// 		]);
+		// 		$dataAdmin  = new Dosen;
+		// 		$dataAdmin -> nidn = 999999;
+		// 		$dataAdmin -> nama_dosen = $request->input('nama_dosen');
+		// 		$dataAdmin -> password= Hash::make($request->input('password'));
+		// 		$dataAdmin -> prodi = 'admin';
+		// 		$dataAdmin -> role = "admin";
+		// 		$dataAdmin -> api_token = Hash::make(Str::random(60));
+		// 		$dataAdmin -> save();
+		// 		if($dataAdmin){
+		// 			$nidn = $dataAdmin->nidn;
+		// 			$password = $$dataAdmin->password;
+			
+		// 			$loginDosen = Dosen::where('nidn',"=",$nidn)->first();
+		// 			if(!$loginDosen){
+		// 				return response()->json(
+		// 					[
+		// 							'message' => 'Login Tidak Berhasil',
+		// 							'data' => 'Cek NIDN Anda'
+		// 					],400
+		// 			);
+		// 		}
+		// 			if(!Hash::check($password, $loginDosen->password)){
+		// 				return response()->json(
+		// 					[
+		// 					'message' => 'Login Tidak Berhasil',
+		// 					'data' => 'Cek Password Anda'
+		// 					],400
+		// 					)
+		// 					;
+		// 			}
+		// 			return response()->json(
+		// 				[
+		// 				'status' => 200,
+		// 				'message' => 'Login Berhasil',
+		// 				'data' => $loginDosen
+		// 				],200
+		// 			);
+		// 	}
+				
+		// 	}else{
+		// 	$nidn = $request->input('nidn');
+		// 	$password = $request->input('password');
+			
+		// 	// $loginDosen = DB::table('dosens')->where('nidn',"=",$nidn)->first();
+		// 	$loginDosen = Dosen::where('nidn',"=",$nidn)->first();
+			
+		// 	if(!$loginDosen){
+		// 		return response()->json(
+		// 			[
+		// 					'message' => 'Login Tidak Berhasil',
+		// 					'data' => 'Cek NIDN Anda'
+		// 			],400
+		// 	);
+		// }
+		// 	if(!Hash::check($password, $loginDosen->password)){
+		// 		return response()->json(
+		// 			[
+		// 			'message' => 'Login Tidak Berhasil',
+		// 			'data' => 'Cek Password Anda'
+		// 			],400
+		// 			)
+		// 			;
+		// 	}
+		// 	return response()->json(
+		// 		[
+		// 		'status' => 200,
+		// 		'message' => 'Login Berhasil',
+		// 		'data' => $loginDosen
+		// 		],200
+		// 	);
+		// 	}
+		// }
+		
+		public function loginDosen(Request $request){
 			$nidn = $request->input('nidn');
 			$password = $request->input('password');
 			
@@ -192,10 +274,9 @@ class DosenController extends Controller
 				'message' => 'Login Berhasil',
 				'data' => $loginDosen
 				],200
-);
-
+			);
+			
 		}
-
 
 		public function getDetailDosen(Request $request){
 			$token = explode(' ', $request->header('Authorization'));
