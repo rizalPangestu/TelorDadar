@@ -32,6 +32,25 @@ class HasilController extends Controller
         ]);
     }
 
+
+
+    public function getHasilUjianAll(Request $request, $id){
+        $token = explode(' ', $request->header('Authorization'));
+        $id_dosen = DB::table('dosens')->select('id_dosen')->where('api_token',$token[1])->first();
+       
+        $hasilUjianAll = Hasil::where('id_ujian',$id)->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'get sucess',
+            'data' => $hasilUjianAll
+        ]);
+    }
+
+
+
+
+
     public function editHasilUjian(Request $request, $id){
         
         $updateHasil =  Hasil::where('id_hasil', $id)->first();

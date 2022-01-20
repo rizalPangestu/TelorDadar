@@ -24,6 +24,22 @@ class UjiansController extends Controller
         );
     }
 
+    public function getDataUjian(){
+        $dataUjianAll  = Ujian::select("id_ujian",'nama_dosen', 'nama_matkul', "kelas", "mulai", "selesai", "nama_ujian","type_soal")
+        ->join('dosens','ujians.id_dosen','=','dosens.id_dosen')
+        ->join('matkuls', 'ujians.id_matkul','=','matkuls.id_matkul')
+        ->get();
+        
+        return response()->json(
+            [
+                'message' => "Get Sucess",
+                'data' => $dataUjianAll
+            ]
+        );
+    }
+
+    
+
 
 
     public function postData(Request $request){

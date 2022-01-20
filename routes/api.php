@@ -47,6 +47,8 @@ Route::group(['middleware' => 'dosen_auth'], function() {
   Route::post('/dosen', [DosenController::class, 'postData']);
   Route::put('/editDosen/{id}', [DosenController::class, 'editDosen']);
   Route::delete('/deleteDosen/{id}', [DosenController::class, 'deleteDosen']);
+  Route::get('/hasilUjianAll/{id}', [HasilController::class, 'getHasilUjianAll']);
+  Route::get('/getDataUjian', [UjiansController::class, 'getDataUjian']);
 
 
   Route::post('/matkul', [MatkulController::class, 'addMatkul']);
@@ -54,6 +56,7 @@ Route::group(['middleware' => 'dosen_auth'], function() {
   Route::delete('/deleteMatkul/{id}', [MatkulController::class, 'deleteMatkul']);
   Route::get('/matkul', [MatkulController::class, 'getMatkul']);
   Route::get('/matkulCount', [MatkulController::class, 'count']);
+  
 
   //get soal
   Route::get('/soal_dosen', [DosenController::class, 'getListSoal']);
@@ -86,7 +89,6 @@ Route::group(['middleware' => 'dosen_auth'], function() {
 });
 Route::post('/loginDosen', [DosenController::class, 'loginDosen']);
 Route::post('/addAdmin', [DosenController::class, 'addAdmin']);
-
 
 //route matkul 
 //route api ujian
