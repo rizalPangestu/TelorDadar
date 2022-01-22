@@ -10,7 +10,29 @@ class HasilController extends Controller
 {
     //
     public function getHasilUjian(Request $request){
-        $hasilUjian = DB::table('hasils')->get();
+        // $hasilUjian = DB::table('hasils')->get();
+        $hasilUjian = Hasil::select(
+            'nama_dosen',
+            'id_hasil',
+            'hasils.id_ujian',
+            'hasils.id_dosen',
+            'hasils.id_matkul',
+            'nama_matkul',
+            'type_soal',
+            'jawaban_essay',
+            'nama_mhs',
+            'email',
+            'nilai_akhir',
+            'nilai_essay',
+            'nilai_pg',
+            'nim',
+            'point',
+            'mulai',
+            )
+        ->join('ujians','ujians.id_ujian','=','hasils.id_ujian')
+        ->join('dosens','dosens.id_dosen','=','hasils.id_dosen')
+        ->join('matkuls','matkuls.id_matkul','=','hasils.id_matkul')
+        ->get();
 
         return response()->json([
             'status' => 200,
@@ -23,7 +45,30 @@ class HasilController extends Controller
         $token = explode(' ', $request->header('Authorization'));
         $id_dosen = DB::table('dosens')->select('id_dosen')->where('api_token',$token[1])->first();
         
-        $hasilUjian = DB::table('hasils')->where('id_dosen',$id_dosen->id_dosen)->where('id_ujian',$id)->get();
+        // $hasilUjian = DB::table('hasils')->where('id_dosen',$id_dosen->id_dosen)->where('id_ujian',$id)->get();
+        $hasilUjian = Hasil::select(
+            'nama_dosen',
+            'id_hasil',
+            'hasils.id_ujian',
+            'hasils.id_dosen',
+            'hasils.id_matkul',
+            'nama_matkul',
+            'type_soal',
+            'jawaban_essay',
+            'nama_mhs',
+            'email',
+            'nilai_akhir',
+            'nilai_essay',
+            'nilai_pg',
+            'nim',
+            'point',
+            'mulai',
+            )
+        ->join('ujians','ujians.id_ujian','=','hasils.id_ujian')
+        ->join('dosens','dosens.id_dosen','=','hasils.id_dosen')
+        ->join('matkuls','matkuls.id_matkul','=','hasils.id_matkul')
+        ->where('hasils.id_dosen',$id_dosen->id_dosen)
+        ->where('hasils.id_ujian',$id)->get();
 
         return response()->json([
             'status' => 200,
@@ -38,12 +83,34 @@ class HasilController extends Controller
         $token = explode(' ', $request->header('Authorization'));
         $id_dosen = DB::table('dosens')->select('id_dosen')->where('api_token',$token[1])->first();
        
-        $hasilUjianAll = Hasil::where('id_ujian',$id)->get();
+        // $hasilUjianAll = Hasil::where('id_ujian',$id)->get();
+        $hasilUjian = Hasil::select(
+            'nama_dosen',
+            'id_hasil',
+            'hasils.id_ujian',
+            'hasils.id_dosen',
+            'hasils.id_matkul',
+            'nama_matkul',
+            'type_soal',
+            'jawaban_essay',
+            'nama_mhs',
+            'email',
+            'nilai_akhir',
+            'nilai_essay',
+            'nilai_pg',
+            'nim',
+            'point',
+            'mulai',
+            )
+        ->join('ujians','ujians.id_ujian','=','hasils.id_ujian')
+        ->join('dosens','dosens.id_dosen','=','hasils.id_dosen')
+        ->join('matkuls','matkuls.id_matkul','=','hasils.id_matkul')
+        ->where('hasils.id_ujian',$id)->get();
 
         return response()->json([
             'status' => 200,
             'message' => 'get sucess',
-            'data' => $hasilUjianAll
+            'data' => $hasilUjian
         ]);
     }
 
@@ -57,6 +124,7 @@ class HasilController extends Controller
         $ujian = Ujian::where('id_ujian', $updateHasil->id_ujian) -> first();
 
         if($updateHasil){
+            
             $updateHasil -> id_ujian = $updateHasil->id_ujian ;
             $updateHasil -> id_dosen = $updateHasil -> id_dosen;
             $updateHasil -> id_matkul= $updateHasil -> id_matkul;
@@ -64,10 +132,26 @@ class HasilController extends Controller
             $updateHasil -> nim = $updateHasil -> nim;
             $updateHasil ->nama_mhs = $updateHasil -> nama_mhs;
             $updateHasil ->point = $request->point  ? $request->nilai_essay  : $updateHasil -> point;
-            $updateHasil ->nilai_pg =ceil(($updateHasil->point / $ujian->jumlah_soal_PG ) * 100);
+            if($ujian->type_soal === "PG Dan Essay"){
+                $updateHasil ->nilai_pg =ceil(($updateHasil->point / $ujian->jumlah_soal_PG ) * 100);
+            }
+            if($ujian->type_soal === "PG"){
+                $updateHasil ->nilai_pg =ceil(($updateHasil->point / $ujian->jumlah_soal_PG ) * 100);
+            }
+            if($ujian->type_soal === "Essay"){
+                $updateHasil ->nilai_pg = NULL;
+            }
             $updateHasil ->jawaban_essay = $updateHasil->jawaban_essay;
             $updateHasil ->nilai_essay =$request->nilai_essay ? $request->nilai_essay : $updateHasil->nilai_essay;
-            $updateHasil ->nilai_akhir = ceil(($updateHasil->nilai_pg + $updateHasil->nilai_essay) / 2);
+            if($ujian->type_soal === "PG Dan Essay"){
+                $updateHasil ->nilai_akhir = ceil(($updateHasil->nilai_pg + $updateHasil->nilai_essay) / 2);
+            }
+            if($ujian->type_soal === "PG"){
+                $updateHasil ->nilai_akhir = $updateHasil->nilai_pg;
+            }
+            if($ujian->type_soal === "Essay"){
+                $updateHasil ->nilai_akhir = $request->nilai_essay ? $request->nilai_essay : $updateHasil->nilai_essay;
+            }
             $updateHasil->save();
             return response()->json([
                 'status' => 200,
@@ -167,9 +251,9 @@ class HasilController extends Controller
                 $dataHasil ->nama_mhs = $request->nama_mhs;
                 // $dataHasil ->point =$request->point;
                 // $dataHasil ->nilai_pg =($dataHasil->point / $ujian->jlm_soal ) * 100;
-                $dataHasil ->jawaban_essay = str_replace(",",null,json_encode($request->jawaban_essay));
+                $dataHasil ->jawaban_essay = json_encode($request->jawaban_essay);
                 $dataHasil ->nilai_essay =$request->nilai_essay;
-                $dataHasil ->nilai_akhir = $dataHasil->nilai_essay;
+                $dataHasil ->nilai_akhir = 0;
         
                 $dataHasil -> save();
                  return response()->json([
